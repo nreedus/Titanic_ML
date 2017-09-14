@@ -1,10 +1,10 @@
 # Titanic_ML
 
-### Load dplyr and stringr libraries
+#### Load dplyr and stringr libraries
 
-### Load titanic_train.csv data
+#### Load titanic_train.csv data
 
-### Assign dataset to train
+#### Assign dataset to train
 
 ### View data
 
