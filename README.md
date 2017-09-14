@@ -6,138 +6,60 @@
 
 #### Assign dataset to train
 
-### View data
+#### View data
 
-### View the structure of the data with str
+#### View the structure of the data with str
 
-### Filter for passengers that paid zero fare - assign to zero.fare
+#### Filter for passengers that paid zero fare - assign to zero.fare
 
-### Calculate the total fare by Pclass - assign zero.fare to zero.fare.pclass - use groupby, summarise & arrange
+#### Calculate the total fare by Pclass - assign zero.fare to zero.fare.pclass - use groupby, summarise & arrange
 
-### Extract passengers by title (Mr. Mrs. Miss. Rev.) - use str_extract and regex
+#### Extract passengers by title (Mr. Mrs. Miss. Rev.) - use str_extract and regex
 
-### Show table of train/title column
+#### Show table of train/title column
 
-### Map exisitng tiles to new title list - create new data.frame and assign it to titles.lookup. Create new vectors by title from (title column). Then define new gender titles (Mr. Mrs...)
+#### Map exisitng tiles to new title list - create new data.frame and assign it to titles.lookup. Create new vectors by title from (title column). Then define new gender titles (Mr. Mrs...)
 
-### View titles.lookup
+#### View titles.lookup
 
-### Replace Titles with values in the lookup table using the join.left function
+#### Replace Titles with values in the lookup table using the join.left function
 
-### Replace the New.Tile variable with Tile then delete the New.Title variable. 
+#### Replace the New.Tile variable with Tile then delete the New.Title variable. 
 
-### Find all gender errors - by filtering females with male titles and males with female titles - use new title names
+#### Find all gender errors - by filtering females with male titles and males with female titles - use new title names
 
-### Change title from "Dr." to "Mrs." using PassengerID
+#### Change title from "Dr." to "Mrs." using PassengerID
 
-### Generate summary stats for passengers with the title "Mr." by Fare and Pclass (min, max, mean, median, var, SD,IQR)
+#### Generate summary stats for passengers with the title "Mr." by Fare and Pclass (min, max, mean, median, var, SD,IQR)
 
-### Creating tracking feature for fare variable and assign to fare.zero and if ifelse statment - 0 = Y, Else N 
+#### Creating tracking feature for fare variable and assign to fare.zero and if ifelse statment - 0 = Y, Else N 
 
-### Create lookup table for zero fare values using filter, group_by, and summarise - assign to zero.fare.lookup
+#### Create lookup table for zero fare values using filter, group_by, and summarise - assign to zero.fare.lookup
 
-### Impute zero fares using the lookup table and left_join. Replace zero fares with the median value per Pclass
+#### Impute zero fares using the lookup table and left_join. Replace zero fares with the median value per Pclass
 
-train <- train %>%
-  left_join(zero.fare.lookup, by = c("Pclass", "Title")) %>%
-  mutate(fare = ifelse(Fare == 0.0, New.Fare, Fare)) %>%
-  select(-New.Fare)
+#### Take a closer look at the age variable
 
-# Take a closer look at the age variable
+#### Creating tracking feature for fare variable and assign to fare.zero and if ifelse statment - 0 = Y, Else N 
 
-age.stats <- train %>%
-  group_by(Pclass, Title) %>%
-  summarize(Age.Min = min(Age, na.rm = TRUE),
-            Age.Max = max(Age, na.rm = TRUE),
-            Age.Mean = mean(Age, na.rm = TRUE),
-            Age.Median = median(Age, na.rm = TRUE),
-            Age.Var = var(Age, na.rm = TRUE),
-            Age.SD = sd(Age, na.rm = TRUE),
-            Age.IQR = IQR(Age, na.rm = TRUE)) %>%
-  arrange(Title, Pclass)
+#### Create lookup table for age variable with missing values using select
 
-# Creating tracking feature for fare variable and assign to fare.zero and if ifelse statment - 0 = Y, Else N 
+#### Impute missing ages by using a lookup table
 
-train$Age.Missing <- ifelse(is.na(train$Age), "Y", "N")
+#### Create Ticket-based features - Group_by ticket, summarise group.count, Avg fare = max fare / n(), sum of Female.Count, ratio of the n() of males in ticket count / number of people on that ticket.
 
-# Create lookup table for age variable with missing values using select
+#### Double check the work
 
-age.lookup <- age.stats %>%
-  select(Pclass, Title, Age.Mean, Age.Median)
+#### Populate train data with ticket lookup table
 
-# Impute missing ages by using a lookup table
+#### Load install the ggplot2 library - load ggplot2
 
-train <- train %>%
-  left_join(age.lookup, by = c("Pclass", "Title")) %>%
-  mutate(Age = ifelse(Age.Missing == "Y",
-                      ifelse(Title == "Miss.", Age.Median, Age.Mean),
-                      Age)) %>%
-  select(-Age.Median, -Age.Mean)
+#### Create factors for Survived and Pclass
 
-# Create Ticket-based features - Group_by ticket, summarise group.count, Avg fare = max fare / n(), sum of Female.Count, ratio of the n() of males in ticket count / number of people on that ticket.
+#### Create a subset based on passengers traveling with children
 
-ticket.lookup <- train %>%
-  group_by(Ticket) %>%
-  summarise(Group.Count = n(),
-            Ave.Fare = max(Fare) / n(),
-            Female.Count = sum(Sex == "female"),
-            Male.Count = sum(Sex == "male"),
-            Child.Count = sum(Age < 18),
-            Elderly.Count = sum(Age > 54.0),
-            Female.Ratio = sum(Sex == "female") / n(),
-            Male.Ratio = sum(Sex == "Male") / n(),
-            Child.Ratio = sum(Age < 18) / n(),
-            Elderly.Ratio = sum(Age > 54.0) / n(),
-            Female.Child.Ratio = (sum(Age < 18) +
-                                  sum(Sex == "female" & Age >=18)) / n(),
-            Min.Age = min(Age),
-            Max.Age = max(Age))
+#### Visualize the with children subset
 
-# Double check the work
+#### Create subset based on passengers traveling without children
 
-ticket.lookup %>% filter(Ticket == "3101295")
-
-View(train %>% filter(Ticket == "3101295"))
-
-
-# Populate train data with ticket lookup table
-
-train <- train %>%
-  left_join(ticket.lookup, by = "Ticket")
-View(train %>% filter(Ticket == "3101295"))
-
-# Load install the ggplot2 library - load ggplot2
-library(ggplot2)
-
-# Create factors for Survived and Pclass
-
-train$Survived <- as.factor(train$Survived)
-train$Pclass <- as.factor(train$Pclass)
-
-# Create a subset based on passengers traveling with children
-
-tickets.children <- train %>%
-  filter(Child.Count > 0)
-
-# Visualize the with children subset
-
-ggplot(tickets.children, aes(x = Pclass, fill = Survived)) + 
-  theme_bw() +
-  geom_bar() +
-  facet_wrap(~ Title) +
-  labs(y = "Count of Passengers",
-       title = "Survival Rates for Ticket Group Traveling with Children")
-
-# Create subset based on passengers traveling without children
-
-tickets.no.children <- train %>%
-  filter(Child.Count == 0)
-
-# Visualize the no children subset
-
-ggplot(tickets.no.children, aes(x = Pclass, fill = Survived)) +
-  theme_bw() +
-  geom_bar() +
-  facet_wrap(~ Title) +
-  labs(y = "Count of Passengers",
-title = "Survival Rates for Ticket Groups Traveling without Chil
+#### Visualize the no children subset
