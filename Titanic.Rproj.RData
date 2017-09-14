@@ -1,0 +1,70 @@
+library(readr)
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+View(titanic_train)
+library(dplyr)
+library(stringr)
+library(readr)
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+View(titanic_train)
+View(titanic_train)
+View(titanic_train)
+setwd("C:/Users/narce/OneDrive/Documents/GitHub/Titanic")
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+View(titanic_train)
+View(titanic_train)
+train <- titanic_train
+View(train)
+library(dplyr)
+library(stringr)
+train <- titanic_train
+View(train)
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+setwd("C:/Users/narce/OneDrive/Documents/GitHub/Titanic")
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+library(readr)
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+View(titanic_train)
+train <- titanic_train
+View(train)
+str(train)
+zero.fare <- train %>%
+filter(Fare == 0.0)
+zero.fare.pclass <- zero.fare %>%
+group_by(Pclass) %>%
+summarize(Total = n()) %>%
+arrange(desc(Total))
+train <- train %>%
+mutate(Title = str_extract(Name, "[a-zA-Z0-9]+\\."))
+table(train$Title)
+titles.lookup <- data.frame(Title = c("Mr.", "Capt.", "Col.", "Don.", "Dr.",
+"Jonkheer.", "Major", "Rev.", "Sir",
+"Mrs.", "Dana.", "Lady.", "Mme.",
+"Countess.", "Miss.", "Mlle.", "Ms.",
+"Master."),
+New.Title = c(rep("Mr.", 9),
+rep("Mrs.", 5),
+rep("Miss.", 3),
+"Master."),
+stringsAsFactors = FALSE)
+View(titles.lookup)
+train <- train %>%
+left_join(titles.lookup, by = "Title")
+train <- train %>%
+mutate(Title = New.Title) %>%
+select(-New.Title)
+train %>%
+filter((Sex == "female" & (Title == "Mr." | Title == "Master.")) |
+(Sex == "male" & (Title == "Mrs." | Title == "Miss.")))
+train$Title[train$PassengerId == 797] <- "Mrs."
+mr.fare.stats <- train %>%
+filter(Title == "Mr.") %>%
+group_by(Pclass) %>%
+summarize(Fare.Min = min(Fare),
+Fare.Max = max(Fare),
+Fare.Mean = mean(Fare),
+Fare.Median = median(Fare),
+Fare.Var = var(Fare),
+Fare.SD = sd(Fare),
+Fare.IQR = IQR(Fare))
+save.image("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj.RData")
+savehistory("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj.RData")

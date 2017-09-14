@@ -1,0 +1,95 @@
+# Load dplyr and stringr libraries
+
+library(dplyr)
+library(stringr)
+
+# Load titanic_train.csv data
+````
+titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+````
+# Assign dataset to train
+````
+train <- titanic_train
+````
+# View data
+````
+View(train)
+````
+# View the structure of the data with str
+````
+str(train)
+````
+# Filter for passengers that paid zero fare - assign to zero.fare
+````
+zero.fare <- train %>%
+  filter(Fare == 0.0)
+````
+# Calculate the total fare by Pclass - assign zero.fare to zero.fare.pclass - use groupby, summarise & arrange
+````
+zero.fare.pclass <- zero.fare %>%
+  group_by(Pclass) %>%
+  summarize(Total = n()) %>%
+  arrange(desc(Total))
+````
+# Extract passengers by title (Mr. Mrs. Miss. Rev.) - use str_extract and regex
+````
+train <- train %>%
+mutate(Title = str_extract(Name, "[a-zA-Z0-9]+\\."))
+````
+# Show table of train/title column
+````
+table(train$Title)
+````
+# Map exisitng tiles to new title list - create new data.frame and assign it to titles.lookup. Create new vectors by title from (title column). Then define new gender titles (Mr. Mrs...)
+````
+titles.lookup <- data.frame(Title = c("Mr.", "Capt.", "Col.", "Don.", "Dr.", 
+                                      "Jonkheer.", "Major", "Rev.", "Sir", 
+                                      "Mrs.", "Dana.", "Lady.", "Mme.", 
+                                      "Countess.", "Miss.", "Mlle.", "Ms.", 
+                                      "Master."), 
+                            New.Title = c(rep("Mr.", 9),
+                                          rep("Mrs.", 5),
+                                          rep("Miss.", 3),
+                                          "Master."),
+                            stringsAsFactors = FALSE)
+# View titles.lookup
+View(titles.lookup)
+````
+# Replace Titles with values in the lookup table using the join.left function
+````
+train <- train %>%
+  left_join(titles.lookup, by = "Title")
+````
+# Replace the New.Tile variable with Tile then delete the New.Title variable. 
+````
+train <- train %>%
+  mutate(Title = New.Title) %>%
+  select(-New.Title)
+````
+# Find all gender errors - by filtering females with male titles and males with female titles - use new title names
+````
+train %>%
+  filter((Sex == "female" & (Title == "Mr." | Title == "Master.")) |
+         (Sex == "male" & (Title == "Mrs." | Title == "Miss.")))
+````
+# Change title from "Dr." to "Mrs." using PassengerID
+````
+train$Title[train$PassengerId == 797] <- "Mrs."
+````
+# Generate summary stats for passengers with the title "Mr." by Fare and Pclass (min, max, mean, median, var, SD,IQR)
+
+mr.fare.stats <- train %>%
+  filter(Title == "Mr.") %>%
+  group_by(Pclass) %>%
+  summarize(Fare.Min = min(Fare),
+            Fare.Max = max(Fare),
+            Fare.Mean = mean(Fare),
+            Fare.Median = median(Fare),
+            Fare.Var = var(Fare),
+            Fare.SD = sd(Fare),
+            Fare.IQR = IQR(Fare))
+
+
+
+
+
