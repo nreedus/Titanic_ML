@@ -2,78 +2,41 @@
 
 ### Load dplyr and stringr libraries
 
-library(dplyr)
-library(stringr)
+### Load titanic_train.csv data
 
-# Load titanic_train.csv data
+### Assign dataset to train
 
-titanic_train <- read_csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+### View data
 
-# Assign dataset to train
+### View the structure of the data with str
 
-train <- titanic_train
+### Filter for passengers that paid zero fare - assign to zero.fare
 
-# View data
+### Calculate the total fare by Pclass - assign zero.fare to zero.fare.pclass - use groupby, summarise & arrange
 
-# View the structure of the data with str
+### Extract passengers by title (Mr. Mrs. Miss. Rev.) - use str_extract and regex
 
-# Filter for passengers that paid zero fare - assign to zero.fare
+### Show table of train/title column
 
-# Calculate the total fare by Pclass - assign zero.fare to zero.fare.pclass - use groupby, summarise & arrange
+### Map exisitng tiles to new title list - create new data.frame and assign it to titles.lookup. Create new vectors by title from (title column). Then define new gender titles (Mr. Mrs...)
 
-# Extract passengers by title (Mr. Mrs. Miss. Rev.) - use str_extract and regex
+### View titles.lookup
 
-# Show table of train/title column
+### Replace Titles with values in the lookup table using the join.left function
 
-# Map exisitng tiles to new title list - create new data.frame and assign it to titles.lookup. Create new vectors by title from (title column). Then define new gender titles (Mr. Mrs...)
+### Replace the New.Tile variable with Tile then delete the New.Title variable. 
 
-# View titles.lookup
+### Find all gender errors - by filtering females with male titles and males with female titles - use new title names
 
-# Replace Titles with values in the lookup table using the join.left function
+### Change title from "Dr." to "Mrs." using PassengerID
 
-# Replace the New.Tile variable with Tile then delete the New.Title variable. 
+### Generate summary stats for passengers with the title "Mr." by Fare and Pclass (min, max, mean, median, var, SD,IQR)
 
-train <- train %>%
-  mutate(Title = New.Title) %>%
-  select(-New.Title)
+### Creating tracking feature for fare variable and assign to fare.zero and if ifelse statment - 0 = Y, Else N 
 
-# Find all gender errors - by filtering females with male titles and males with female titles - use new title names
+### Create lookup table for zero fare values using filter, group_by, and summarise - assign to zero.fare.lookup
 
-train %>%
-  filter((Sex == "female" & (Title == "Mr." | Title == "Master.")) |
-         (Sex == "male" & (Title == "Mrs." | Title == "Miss.")))
-
-# Change title from "Dr." to "Mrs." using PassengerID
-
-train$Title[train$PassengerId == 797] <- "Mrs."
-
-# Generate summary stats for passengers with the title "Mr." by Fare and Pclass (min, max, mean, median, var, SD,IQR)
-
-mr.fare.stats <- train %>%
-  filter(Title == "Mr.") %>%
-  group_by(Pclass) %>%
-  summarize(Fare.Min = min(Fare),
-            Fare.Max = max(Fare),
-            Fare.Mean = mean(Fare),
-            Fare.Median = median(Fare),
-            Fare.Var = var(Fare),
-            Fare.SD = sd(Fare),
-            Fare.IQR = IQR(Fare))
-
-# Creating tracking feature for fare variable and assign to fare.zero and if ifelse statment - 0 = Y, Else N 
-
-train$Fare.Zero <- ifelse(train$Fare == 0.0, "Y", "N")
-
-View(train)
-
-# Create lookup table for zero fare values using filter, group_by, and summarise - assign to zero.fare.lookup
-
-zero.fare.lookup <- train %>%
-  filter(Title == "Mr.") %>%
-  group_by(Pclass, Title) %>%
-  summarise(New.Fare = median(Fare))
-
-# Impute zero fares using the lookup table and left_join. Replace zero fares with the median value per Pclass
+### Impute zero fares using the lookup table and left_join. Replace zero fares with the median value per Pclass
 
 train <- train %>%
   left_join(zero.fare.lookup, by = c("Pclass", "Title")) %>%
