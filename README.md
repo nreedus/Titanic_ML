@@ -1,6 +1,6 @@
 # Titanic_ML
 
-# Load dplyr and stringr libraries
+### Load dplyr and stringr libraries
 
 library(dplyr)
 library(stringr)
