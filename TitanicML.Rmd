@@ -1,9 +1,19 @@
 ---
-title: "TitanicML1"
+title: "TitanicML"
 author: "Narcel Reedus"
 date: "September 14, 2017"
 output: html_document
 ---
+
+Load dplyr and stringr libraries
+```{r Load libraries}
+library(dplyr)
+library(stringr)
+library(printr)
+library(pander)
+library(knitr)
+library(httpuv)
+```
 
 ```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
