@@ -2,7 +2,8 @@
 title: "Titanic"
 author: "Narcel Reedus"
 date: "September 14, 2017"
-output: html_document
+output: github_document
+keep_md: TRUE
 ---
 
 # Summary
