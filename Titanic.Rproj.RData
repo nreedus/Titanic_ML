@@ -68,3 +68,98 @@ Fare.SD = sd(Fare),
 Fare.IQR = IQR(Fare))
 save.image("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj.RData")
 savehistory("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj.RData")
+source('~/.active-rstudio-document')
+train$Fare.Zero <- ifelse(train$Fare == 0.0, "Y", "N")
+View(train)
+train$Fare.Zero <- ifelse(train$Fare == 0.0, "Y", "N")
+zero.fare.lookup <- train %>%
+filter(Title == "Mr.") %>%
+group_by(Pclass, Title) %>%
+summarise(New.Fare = median(Fare))
+View(zero.fare.lookup)
+train <- train %>%
+left_join(zero.fare.lookup, by = c("Pclass", "Title")) %>%
+mutate(fare = ifelse(Fare == 0.0, New.Fare, Fare)) %>%
+select(-New.Fare)
+age.stats <- train %>%
+group_by(Pclass, Title) %>%
+summarize(Age.Min = min(Age, na.rm = TRUE),
+Age.Max = max(Age, na.rm = TRUE),
+Age.Mean = mean(Age, na.rm = TRUE),
+Age.Median = median(Age, na.rm = TRUE),
+Age.Var = var(Age, na.rm = TRUE),
+Age.SD = sd(Age, na.rm = TRUE),
+Age.IQR = IQR(Age, na.rm = TRUE)) %>%
+arrange(Title, Pclass)
+View(age.stats)
+train$Age.Missing <- ifelse(is.na(train$Age), "Y", "N")
+age.lookup <- age.stats %>%
+select(Pclass, Title, Age.Mean, Age.Median)
+View(age.lookup)
+train <- train %>%
+left_join(age.lookup, by = c("Pclass", "Title")) %>%
+mutate(Age = ifelse(Age.Missing == "Y",
+ifelse(Title == "Miss.", Age.Median, Age.Mean),
+Age)) %>%
+select(-Age.Median, -Age.Mean)
+View(age.lookup)
+ticket.lookup <- train %>%
+group_by(Ticket) %>%
+summarise(Group.Count = n(),
+Ave.Fare = max(Fare) / n(),
+Female.Count = sum(Sex == "female"),
+Male.Count = sum(Sex == "male"),
+Child.Count = sum(Age < 18),
+Elderly.Count = sum(Age > 54.0),
+Female.Ratio = sum(Sex == "female") / n(),
+Male.Ratio = sum(Sex == "Male") / n(),
+Child.Ratio = sum(Age < 18) / n(),
+Elderly.Ratio = sum(Age > 54.0) / n(),
+Female.Child.Ratio = (sum(Age < 18) +
+sum(Sex == "female" & Age >=18)) / n(),
+Min.Age = min(Age),
+Max.Age = max(Age))
+View(ticket.lookup)
+View(ticket.lookup)
+ticket.lookup %>% filter(Ticket == "3101295")
+library(dplyr)
+library(stringr)
+ticket.lookup %>% filter(Ticket == "3101295")
+View(train %>% filter(Ticket == "3101295"))
+train <- train %>%
+left_join(ticket.lookup, by = "Ticket")
+View(train %>% filter(Ticket == "3101295"))
+library(ggplot2)
+install.packages("ggplot2")
+library(ggplot2)
+?factor
+train$Survived <- as.factor(train$Survived)
+train$Pclass <- as.factor(train$Pclass)
+tickets.children <- train %>%
+filter(Child.Count > 0)
+View(tickets.children)
+ggplot(tickets.children, aes(x = Pclass, fill = Survived)) +
+theme_bw() +
+geom_bar() +
+facet_wrap(~ Title) +
+labs(y = "Count of Passengers",
+title = "Survival Rates for Ticket Group Traveling with Children")
+tickets.no.children <- train %>%
+filter(Child.Count == 0)
+View(tickets.no.children)
+ggplot(tickets.no.children, aes(x = Pclass, fill = Survived)) +
+theme_bw() +
+geom_bar() +
+facet_wrap(~ Title) +
+labs(y = "Count of Passengers",
+title = "Survival Rates for Ticket Groups Traveling without Children")
+install.packages("printr")
+library(dplyr)
+library(stringr)
+library(printr)
+save.image("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj.RData")
+save.image("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj.RData")
+savehistory("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/.RData")
+savehistory("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic.Rproj")
+savehistory("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic_ML/Titanic.Rproj")
+savehistory("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/Titanic_ML/Titanic.Rproj.RData")
