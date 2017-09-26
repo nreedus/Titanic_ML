@@ -1,0 +1,56 @@
+---
+title: "Titanic"
+author: "Narcel Reedus"
+date: "September 14, 2017"
+output: html_document
+---
+
+# Summary
+
+The maiden voyage of the Titanic; made popular by James Cameron's epic 1997 film, is one of the most infamous tragedies in human history. The "unsinkable" oceanliner struck an iceberg and sank to the bottom of the Atlantic killing 1,502 of its 2,224 passengers and crew.
+
+Today, with the help of the ship's manifest, data analysts and data scientists from around the globe are able to discover numerous insights by appyling machine learning algorithms to predict who lived and who ultimately died onboard the RMS Titanic.
+
+My goal here is to use feature engineering to viusalize the distinguishing factors between the passengers more likely to survive the shipwreck from those who ultimately perished.
+
+# Analysis
+
+Load dplyr and stringr libraries
+```{r Load libraries}
+library(dplyr)
+library(stringr)
+library(printr)
+```
+The first step is to become intimately familiar with the data. Even though there are only 891 observations and 12 variables, there are many insights hidden within each data point. 
+
+We begin by loading the titanic_train.csv data. Assign dataset to train. View data and view the structure of the data with str.
+
+```{r load and view data}
+titanic_train <- read.csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
+train <- titanic_train
+View(train)
+str(train)
+```
+
+# Variables
+
+**PassengerID**
+The PassengerID varible simply counts the number of observations and in not other way directly connects to actual passengers onboard the Titanic. I will not use the PassengerID in this project.
+
+**Survived**
+Survived is a binary variable and equates to whether the passenger survived or perished is hugely important and will serve as as our dependent variable.
+
+**Pclass**
+The Pclass variable 
+
+**Name**
+**Sex**
+**Age**
+**SibSp**
+**Parch**
+**Ticket**
+**Fare**
+**Cabin**
+**Embarked**
+
+
