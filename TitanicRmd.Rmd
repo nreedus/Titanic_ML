@@ -23,6 +23,7 @@ library(printr)
 library(pander)
 library(knitr)
 library(httpuv)
+library(caTools)
 ```
 The first step is to become intimately familiar with the data. Even though there are only 891 observations and 12 variables, there are many insights hidden within each data point. 
 
@@ -47,6 +48,7 @@ Survived is a binary variable and equates to whether the passenger survived or p
 The Pclass variable 
 
 **Name**
+
 **Sex**
 **Age**
 **SibSp**

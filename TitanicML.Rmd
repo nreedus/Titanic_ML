@@ -13,6 +13,7 @@ library(printr)
 library(pander)
 library(knitr)
 library(httpuv)
+library(caTools)
 ```
 
 ```{r setup, include=TRUE}
