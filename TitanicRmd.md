@@ -71,13 +71,27 @@ Variables
 
 **PassengerID** The PassengerID varible simply counts the number of observations and in not other way directly connects to actual passengers onboard the Titanic. I will not use the PassengerID in this project.
 
-**Survived** Survived is a binary variable and equates to whether the passenger survived or perished is hugely important and will serve as as our dependent variable.
+**Survived** Survived is a binary variable and equates to whether the passenger survived or perished. Survived is hugely important and will serve as as our dependent variable.
 
-**Pclass** The Pclass variable
+**Pclass** The Pclass variable translate well as a look into the socio-economic status of each passenger. 1 = first class or Upper deck, 2 = second class or Middle deck, and 3 = third class or lower deck. I will certainly take advange of this independent variable classification as I build new features.
 
-**Name**
+**Name** Name is a string variable that presents this dataset with a bit of a challenge. There are a number of titles included within the name variable that we can extract and attempt to assign to gender. For instance, Jonkheer is an adult male but Miss is used to describe unwed adult women and female children.
 
-**Sex** **Age** **SibSp** **Parch** **Ticket** **Fare** **Cabin** **Embarked**
+**Sex** The Sex Variable translates to gender.
+
+**Age** The Age variable is important but the Age value is missing for several passengers. I will impute the Age for the missing values.
+
+**SibSp** SipSp lumps siblings (brother, sister, stepbrother, stepsister) together with Spouses (husbands and wives)
+
+**Parch** The Parch variable combines Parents travelling with children.
+
+**Ticket** The ticket variable provides a ticket number. However, some passengers do not have a ticket number or share a ticket number with their family.
+
+**Fare** The Fare variable relates to the price passengers' paid to travel on the Titanic. There are a number of passengers that did not pay a Fare.
+
+**Cabin** The cabin variable has a lot of missing values and may not play an inportant role in this analysis.
+
+**Embarked** The Embarked variable correlates to where passengers bordered the ship: C = Cherbourg, Q = Queenstown, S = Southampton
 
 Filter for passengers that paid zero fare - assign to zero.fare
 
