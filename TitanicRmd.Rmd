@@ -22,6 +22,7 @@ library(stringr)
 library(printr)
 library(pander)
 library(knitr)
+library(httpuv)
 ```
 The first step is to become intimately familiar with the data. Even though there are only 891 observations and 12 variables, there are many insights hidden within each data point. 
 
@@ -55,13 +56,10 @@ The Pclass variable
 **Cabin**
 **Embarked**
 
-Filter for passengers that paid zero fare - assign to zero.fare.
+Filter for passengers that paid zero fare - assign to zero.fare
 
 ```{r}
 zero.fare <- train %>%
   filter(Fare == 0.0)
 zero.fare
-```
-```{r, results='asis'}
-knitr::kable(zero.fare)
 ```
