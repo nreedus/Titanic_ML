@@ -61,6 +61,5 @@ zero.fare <- train %>%
   filter(Fare == 0.0)
 ```
 ```{r results='asis'}
-
 knitr::kable(zero.fare, caption = "Zero Fare")
 ```
