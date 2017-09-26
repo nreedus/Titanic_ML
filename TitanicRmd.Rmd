@@ -60,6 +60,6 @@ Filter for passengers that paid zero fare - assign to zero.fare
 zero.fare <- train %>%
   filter(Fare == 0.0)
 ```
-```{r results='asis'}
+```{r table, results='asis'}
 knitr::kable(zero.fare, caption = "Zero Fare")
 ```
