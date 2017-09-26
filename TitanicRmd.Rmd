@@ -136,3 +136,33 @@ knitr::kable(titles.lookup)
 ```
 
 
+Currently there are 18 different titles in the Titanic dataset. To arrcurately predict survivors by Sex I need to simplfy both the Titles and Sex variables. I will use the New.Titles table to left_join (Mr. Mrs. Miss. and Master) to match the titles.lookup data.frame. This will create a more condensed Title variable that more accurately identifies the Sex and Title of each passenger. 
+
+```{r left join}
+train <- train %>%
+  left_join(titles.lookup, by = "Title")
+```
+```{r delete New.Title}
+train <- train %>%
+  mutate(Title = New.Title) %>%
+  select(-New.Title)
+```
+
+There may be an error in reassigning titles by Sex. To mke sure that male and female passengers have the correct title I will filter females male titles and males with female titles.
+
+```{r filter by Sex}
+train %>%
+  filter((Sex == "female" & (Title == "Mr." | Title == "Master.")) |
+         (Sex == "male" & (Title == "Mrs." | Title == "Miss.")))
+```
+
+I found one woman with the title of Dr. Since all the other titles with Dr. are male I will change this female passengers' title to Mrs. 
+
+```{r PassengerId}
+train$Title[train$PassengerId == 797] <- "Mrs."
+```
+
+
+
+
+
