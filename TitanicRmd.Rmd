@@ -55,7 +55,7 @@ The Pclass variable
 **Cabin**
 **Embarked**
 
-Filter for passengers that paid zero fare - assign to zero.fare
+Filter for passengers that paid zero fare - assign to zero.fare.
 
 ```{r}
 zero.fare <- train %>%
