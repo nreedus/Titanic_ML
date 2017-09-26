@@ -27,11 +27,12 @@ The first step is to become intimately familiar with the data. Even though there
 We begin by loading the titanic_train.csv data. Assign dataset to train. View data and view the structure of the data with str.
 
 
-```{r paged.print=TRUE}
+```{r results='asis'}
 titanic_train <- read.csv("C:/Users/narce/OneDrive/Documents/GitHub/Titanic/titanic_train.csv")
 train <- titanic_train
 View(train)
 str(train)
+knitr::kable(str(train))
 ```
 
 # Variables
