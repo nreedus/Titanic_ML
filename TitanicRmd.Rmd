@@ -21,6 +21,7 @@ Load dplyr and stringr libraries
 library(dplyr)
 library(stringr)
 library(printr)
+library(pander)
 ```
 The first step is to become intimately familiar with the data. Even though there are only 891 observations and 12 variables, there are many insights hidden within each data point. 
 
@@ -61,5 +62,6 @@ zero.fare <- train %>%
   filter(Fare == 0.0)
 ```
 ```{r table, results='asis'}
-knitr::kable(zero.fare, caption = "Zero Fare")
+panderOptions("table.style", "rmarkdown")
+pander(zero.fare)
 ```
