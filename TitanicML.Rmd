@@ -1,7 +1,7 @@
 ---
 title: "TitanicML1"
 author: "Narcel Reedus"
-date: "September 26, 2017"
+date: "September 14, 2017"
 output: html_document
 ---
 
