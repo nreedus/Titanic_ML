@@ -3,7 +3,6 @@ title: "Titanic"
 author: "Narcel Reedus"
 date: "September 14, 2017"
 output: html_document
-df_print: paged
 ---
 
 # Summary
@@ -22,6 +21,7 @@ library(dplyr)
 library(stringr)
 library(printr)
 library(pander)
+library(knitr)
 ```
 The first step is to become intimately familiar with the data. Even though there are only 891 observations and 12 variables, there are many insights hidden within each data point. 
 
@@ -60,8 +60,5 @@ Filter for passengers that paid zero fare - assign to zero.fare
 ```{r}
 zero.fare <- train %>%
   filter(Fare == 0.0)
-```
-```{r table, results='asis'}
-panderOptions("table.style", "rmarkdown")
-pander(zero.fare)
+zero.fare
 ```
