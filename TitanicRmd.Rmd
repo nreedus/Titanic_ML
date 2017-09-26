@@ -62,3 +62,6 @@ zero.fare <- train %>%
   filter(Fare == 0.0)
 zero.fare
 ```
+```{r, results='asis'}
+knitr::kable(zero.fare)
+```
