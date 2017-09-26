@@ -110,7 +110,7 @@ zero.fare.pclass <- zero.fare %>%
 zero.fare.pclass
 ```
 
-The next phase of this analysis to the get a better understanding of the survivors by gender, denoted here as Sex. My first step is to seperate adult males and females from the male and female adolecents on the ship. I used regex function str_extract to extract passengers by title (Mr. Mrs. Miss. Rev.) and then create a new feature called Title.
+The next phase of this analysis to the get a better understanding of the survivors by gender, denoted here as Sex. My first step is to seperate adult males and females from the male and female adolecents on the ship. I used regex function str_extract to extract passengers by title (Mr. Mrs. Miss. Rev...) by locating the word just before the (.) period in the Name variable and then create a new feature called Title. 
 
 ```{r extract title}
 train <- train %>%
@@ -118,7 +118,21 @@ mutate(Title = str_extract(Name, "[a-zA-Z0-9]+\\."))
 table(train$Title)
 ```
 
+Now I create a new data.frame (titles.lookup) that contains the title variable and a New.Title variable condensed by gender (Mr. Mrs. Miss, and Master). My goal is to line up the adult male titles to Mr., married adult female titles to Mrs., adolescent females and unwed adult females as Miss., and adolescent boys as Master.
 
-
+```{r lookup table}
+titles.lookup <- data.frame(Title = c("Mr.", "Capt.", "Col.", "Don.", "Dr.", 
+                                      "Jonkheer.", "Major", "Rev.", "Sir", 
+                                      "Mrs.", "Dana.", "Lady.", "Mme.", 
+                                      "Countess.", "Miss.", "Mlle.", "Ms.", 
+                                      "Master."), 
+                            New.Title = c(rep("Mr.", 9),
+                                          rep("Mrs.", 5),
+                                          rep("Miss.", 3),
+                                          "Master."),
+                            stringsAsFactors = FALSE)
+View(titles.lookup)
+knitr::kable(titles.lookup)
+```
 
 

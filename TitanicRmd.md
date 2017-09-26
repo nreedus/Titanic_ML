@@ -161,7 +161,7 @@ zero.fare.pclass
 |       1|      5|
 |       3|      4|
 
-The next phase of this analysis to the get a better understanding of the survivors by gender, denoted here as Sex. My first step is to seperate adult males and females from the male and female adolecents on the ship. I used regex function str\_extract to extract passengers by title (Mr. Mrs. Miss. Rev.) and then create a new feature called Title.
+The next phase of this analysis to the get a better understanding of the survivors by gender, denoted here as Sex. My first step is to seperate adult males and females from the male and female adolecents on the ship. I used regex function str\_extract to extract passengers by title (Mr. Mrs. Miss. Rev...) by locating the word just before the (.) period in the Name variable and then create a new feature called Title.
 
 ``` r
 train <- train %>%
@@ -172,3 +172,41 @@ table(train$Title)
 |  Capt.|  Col.|  Countess.|  Don.|  Dr.|  Jonkheer.|  Lady.|  Major.|  Master.|  Miss.|  Mlle.|  Mme.|  Mr.|  Mrs.|  Ms.|  Rev.|  Sir.|
 |------:|-----:|----------:|-----:|----:|----------:|------:|-------:|--------:|------:|------:|-----:|----:|-----:|----:|-----:|-----:|
 |      1|     2|          1|     1|    7|          1|      1|       2|       40|    182|      2|     1|  517|   125|    1|     6|     1|
+
+Now I create a new data.frame (titles.lookup) that contains the title variable and a New.Title variable condensed by gender (Mr. Mrs. Miss, and Master). My goal is to line up the adult male titles to Mr., married adult female titles to Mrs., adolescent females and unwed adult females as Miss., and adolescent boys as Master.
+
+``` r
+titles.lookup <- data.frame(Title = c("Mr.", "Capt.", "Col.", "Don.", "Dr.", 
+                                      "Jonkheer.", "Major", "Rev.", "Sir", 
+                                      "Mrs.", "Dana.", "Lady.", "Mme.", 
+                                      "Countess.", "Miss.", "Mlle.", "Ms.", 
+                                      "Master."), 
+                            New.Title = c(rep("Mr.", 9),
+                                          rep("Mrs.", 5),
+                                          rep("Miss.", 3),
+                                          "Master."),
+                            stringsAsFactors = FALSE)
+View(titles.lookup)
+knitr::kable(titles.lookup)
+```
+
+| Title     | New.Title |
+|:----------|:----------|
+| Mr.       | Mr.       |
+| Capt.     | Mr.       |
+| Col.      | Mr.       |
+| Don.      | Mr.       |
+| Dr.       | Mr.       |
+| Jonkheer. | Mr.       |
+| Major     | Mr.       |
+| Rev.      | Mr.       |
+| Sir       | Mr.       |
+| Mrs.      | Mrs.      |
+| Dana.     | Mrs.      |
+| Lady.     | Mrs.      |
+| Mme.      | Mrs.      |
+| Countess. | Mrs.      |
+| Miss.     | Miss.     |
+| Mlle.     | Miss.     |
+| Ms.       | Miss.     |
+| Master.   | Master.   |
