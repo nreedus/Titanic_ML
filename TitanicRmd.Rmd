@@ -310,8 +310,14 @@ ggplot(tickets.children, aes(x = Pclass, fill = Survived)) +
 ```
 
 
-
-
+```{r}
+ggplot(tickets.no.children, aes(x = Pclass, fill = Survived)) +
+  theme_bw() +
+  geom_bar() +
+  facet_wrap(~ Title) +
+  labs(y = "Count of Passengers",
+       title = "Survival Rates for Ticket Groups Traveling without Children")
+```
 
 
 
