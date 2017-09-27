@@ -162,6 +162,182 @@ I found one woman with the title of Dr. Since all the other titles with Dr. are 
 train$Title[train$PassengerId == 797] <- "Mrs."
 ```
 
+There are numerous male passengers with zero fare. I generate summary stats for passengers with the title "Mr." by Fare and Pclass (min, max, mean, median, var, SD,IQR).
+
+```{r fare.stats}
+mr.fare.stats <- train %>%
+  filter(Title == "Mr.") %>%
+  group_by(Pclass) %>%
+  summarize(Fare.Min = min(Fare),
+            Fare.Max = max(Fare),
+            Fare.Mean = mean(Fare),
+            Fare.Median = median(Fare),
+            Fare.Var = var(Fare),
+            Fare.SD = sd(Fare),
+            Fare.IQR = IQR(Fare))
+mr.fare.stats
+```
+
+
+In case I need to come back to passengers that had zero fare, I will create a binary table tracking feature to identify zero fare passengers from paid passengers if ifelse statment - 0 = Y, Else N.
+
+```{r ifelse}
+train$Fare.Zero <- ifelse(train$Fare == 0.0, "Y", "N")
+```
+
+In order to impute the missing Fare values I must find the median fare by Pclass. I will create a lookup table for zero fare values using filter, group_by, and summarise and then assign it to zero.fare.lookup.
+
+```{r zero.fare.lookup}
+zero.fare.lookup <- train %>%
+  filter(Title == "Mr.") %>%
+  group_by(Pclass, Title) %>%
+  summarise(New.Fare = median(Fare))
+  
+zero.fare.lookup
+
+knitr::kable(zero.fare.lookup)
+```
+
+Now that I have determined the median fare for first class as 39.86, second class 13.00, and third class 7.89, I can impute those values into the zero fare values by left_joining the zero.fare.lookup data.frame to the train dataset. This will replace zero fares with the median value per Pclass.
+
+```{r left_join zero.fare.lookup}
+train <- train %>%
+  left_join(zero.fare.lookup, by = c("Pclass", "Title")) %>%
+  mutate(fare = ifelse(Fare == 0.0, New.Fare, Fare)) %>%
+  select(-New.Fare)
+```
+I will generate summary stats based on age that will be helpful in imputing more missing values and create new insights of male survivors by age, title and Pclass. 
+
+```{r group by Pclass}
+age.stats <- train %>%
+  group_by(Pclass, Title) %>%
+  summarize(Age.Min = min(Age, na.rm = TRUE),
+            Age.Max = max(Age, na.rm = TRUE),
+            Age.Mean = mean(Age, na.rm = TRUE),
+            Age.Median = median(Age, na.rm = TRUE),
+            Age.Var = var(Age, na.rm = TRUE),
+            Age.SD = sd(Age, na.rm = TRUE),
+            Age.IQR = IQR(Age, na.rm = TRUE)) %>%
+  arrange(Title, Pclass)
+
+age.stats
+```
+
+As I did before, I will create a binary table tracking feature to identify missing Age values with an if ifelse statment - 0 = Y, Else N.
+
+```{r Missing Age}
+train$Age.Missing <- ifelse(is.na(train$Age), "Y", "N")
+```
+
+This is a lookup table for the Age values selecting Pclass, Title, Age.Mean, Age.Median.
+
+```{r age.lookup}
+age.lookup <- age.stats %>%
+  select(Pclass, Title, Age.Mean, Age.Median)
+```
+
+I will impute missing ages by using this lookup table.
+
+```{r age.lookup2}
+train <- train %>%
+  left_join(age.lookup, by = c("Pclass", "Title")) %>%
+  mutate(Age = ifelse(Age.Missing == "Y",
+                      ifelse(Title == "Miss.", Age.Median, Age.Mean),
+                      Age)) %>%
+  select(-Age.Median, -Age.Mean)
+
+```
+
+For missing fare values by age and sex I will create 13 new Ticket-based features using Group_by ticket, summarise group.count, Avg fare = max fare / n(), sum of Female.Count, ratio of the n() of males in ticket count / number of people on that ticket.
+
+```{r ticket-based feature, results="asis"}
+ticket.lookup <- train %>%
+  group_by(Ticket) %>%
+  summarise(Group.Count = n(),
+            Avg.Fare = max(Fare) / n(),
+            Female.Count = sum(Sex == "female"),
+            Male.Count = sum(Sex == "male"),
+            Child.Count = sum(Age < 18),
+            Elderly.Count = sum(Age > 54.0),
+            Female.Ratio = sum(Sex == "female") / n(),
+            Male.Ratio = sum(Sex == "Male") / n(),
+            Child.Ratio = sum(Age < 18) / n(),
+            Elderly.Ratio = sum(Age > 54.0) / n(),
+            Female.Child.Ratio = (sum(Age < 18) +
+                                  sum(Sex == "female" & Age >=18)) / n(),
+            Min.Age = min(Age),
+            Max.Age = max(Age))
+```
+
+```{r Check the work}
+ticket.lookup %>% filter(Ticket == "3101295")
+```
+
+
+Populate train data with ticket lookup table
+
+```{r}
+train <- train %>%
+  left_join(ticket.lookup, by = "Ticket")
+
+```
+
+Load install the ggplot2 library - load ggplot2
+
+
+library(ggplot2)
+
+It is important to create factors for Survived and Pclass.
+
+```{r}
+train$Survived <- as.factor(train$Survived)
+train$Pclass <- as.factor(train$Pclass)
+```
+
+Here I am creating a subset of passengers that are traveling with children.
+
+```{r}
+tickets.children <- train %>%
+  filter(Child.Count > 0)
+```
+```{r}
+ggplot(tickets.children, aes(x = Pclass, fill = Survived)) + 
+  theme_bw() +
+  geom_bar() +
+  facet_wrap(~ Title) +
+  labs(y = "Count of Passengers",
+       title = "Survival Rates for Ticket Group Traveling with Children")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
